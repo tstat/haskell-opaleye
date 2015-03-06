@@ -1,13 +1,19 @@
-module Opaleye.Operators (module Opaleye.Operators) where
+{-# LANGUAGE FlexibleContexts #-}
+
+module Opaleye.Operators (module Opaleye.Operators,
+                          (O..&&)) where
 
 import           Opaleye.Internal.Column (Column(Column), unsafeCase_,
-                                          unsafeIfThenElse, unsafeGt, unsafeEq)
+                                          unsafeIfThenElse, unsafeGt)
 import qualified Opaleye.Internal.Column as C
 import           Opaleye.Internal.QueryArr (QueryArr(QueryArr))
 import qualified Opaleye.Internal.PrimQuery as PQ
+import qualified Opaleye.Internal.Operators as O
 import qualified Opaleye.PGTypes as T
 
 import qualified Opaleye.Internal.HaskellDB.PrimQuery as HPQ
+
+import qualified Data.Profunctor.Product.Default as D
 
 {-| Restrict query results to a particular condition.  Corresponds to
     the guard method of the MonadPlus class.
@@ -20,8 +26,8 @@ doubleOfInt :: Column T.PGInt4 -> Column T.PGFloat8
 doubleOfInt (Column e) = Column (HPQ.CastExpr "float8" e)
 
 infix 4 .==
-(.==) :: Column a -> Column a -> Column T.PGBool
-(.==) = unsafeEq
+(.==) :: D.Default O.EqPP columns columns => columns -> columns -> Column T.PGBool
+(.==) = (O..==)
 
 infix 4 ./=
 (./=) :: Column a -> Column a -> Column T.PGBool
@@ -48,10 +54,6 @@ case_ = unsafeCase_
 
 ifThenElse :: Column T.PGBool -> Column a -> Column a -> Column a
 ifThenElse = unsafeIfThenElse
-
-infixr 3 .&&
-(.&&) :: Column T.PGBool -> Column T.PGBool -> Column T.PGBool
-(.&&) = C.binOp HPQ.OpAnd
 
 infixr 2 .||
 (.||) :: Column T.PGBool -> Column T.PGBool -> Column T.PGBool
