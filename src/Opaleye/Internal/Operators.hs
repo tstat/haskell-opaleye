@@ -1,4 +1,5 @@
 {-# LANGUAGE FlexibleContexts, FlexibleInstances, MultiParamTypeClasses #-}
+{-# LANGUAGE ScopedTypeVariables #-}
 
 module Opaleye.Internal.Operators where
 
@@ -12,8 +13,9 @@ import           Data.Profunctor.Product (ProductProfunctor, empty, (***!))
 import qualified Data.Profunctor.Product.Default as D
 
 infix 4 .==
-(.==) :: D.Default EqPP columns columns => columns -> columns -> Column T.PGBool
-(.==) = eqExplicit D.def
+(.==) :: forall columns. D.Default EqPP columns columns
+      => columns -> columns -> Column T.PGBool
+(.==) = eqExplicit (D.def :: EqPP columns columns)
 
 infixr 3 .&&
 (.&&) :: Column T.PGBool -> Column T.PGBool -> Column T.PGBool
@@ -21,7 +23,7 @@ infixr 3 .&&
 
 data EqPP a b = EqPP (a -> a -> Column T.PGBool)
 
-eqExplicit :: EqPP columns columns -> columns -> columns -> Column T.PGBool
+eqExplicit :: EqPP columns a -> columns -> columns -> Column T.PGBool
 eqExplicit (EqPP f) = f
 
 instance D.Default EqPP (Column a) (Column a) where
