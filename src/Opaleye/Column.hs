@@ -1,9 +1,10 @@
 module Opaleye.Column (module Opaleye.Column,
                        Column,
                        Nullable,
-                       unsafeCoerce)  where
+                       unsafeCoerce,
+                       unsafeCast)  where
 
-import           Opaleye.Internal.Column (Column, Nullable, unsafeCoerce)
+import           Opaleye.Internal.Column (Column, Nullable, unsafeCoerce, unsafeCast)
 import qualified Opaleye.Internal.Column as C
 import qualified Opaleye.Internal.HaskellDB.PrimQuery as HPQ
 import qualified Opaleye.PGTypes as T
@@ -41,10 +42,3 @@ toNullable = unsafeCoerce
 -- provided value coerced to a nullable type.
 maybeToNullable :: Maybe (Column a) -> Column (Nullable a)
 maybeToNullable = maybe null toNullable
-
--- | Cast a column to any other type. This is safe for some conversions such as uuid to text.
-unsafeCast :: String -> C.Column a -> Column b
-unsafeCast = mapColumn . HPQ.CastExpr
-  where
-    mapColumn :: (HPQ.PrimExpr -> HPQ.PrimExpr) -> Column c -> Column a
-    mapColumn primExpr c = C.Column (primExpr (C.unColumn c))

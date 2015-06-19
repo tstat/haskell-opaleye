@@ -19,6 +19,8 @@ unsafePgFormatTime typeName formatString = castToType typeName . format
 literalColumn :: HPQ.Literal -> Column a
 literalColumn = Column . HPQ.ConstExpr
 
+-- FIXME: This is very easy to misuse.  Need to think about how to
+-- make it less so, perhaps by renaming it.
 castToType :: HPQ.Name -> String -> Column c
 castToType typeName =
     Column . HPQ.CastExpr typeName . HPQ.ConstExpr . HPQ.OtherLit

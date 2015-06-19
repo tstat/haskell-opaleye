@@ -117,7 +117,7 @@ pgCiLazyText = IPT.literalColumn . HPQ.StringLit . LText.unpack . CI.original
 
 -- The json data type was introduced in PostgreSQL version 9.2
 pgJSON :: String -> Column PGJson
-pgJSON = IPT.castToType "json"
+pgJSON = C.unsafeCast "json" . pgString
 
 pgStrictJSON :: SByteString.ByteString -> Column PGJson
 pgStrictJSON = pgJSON . IPT.strictDecodeUtf8

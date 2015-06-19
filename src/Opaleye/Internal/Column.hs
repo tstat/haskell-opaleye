@@ -15,6 +15,13 @@ unColumn (Column e) = e
 unsafeCoerce :: Column a -> Column b
 unsafeCoerce (Column e) = Column e
 
+-- | Cast a column to any other type. This is safe for some conversions such as uuid to text.
+unsafeCast :: String -> Column a -> Column b
+unsafeCast = mapColumn . HPQ.CastExpr
+  where
+    mapColumn :: (HPQ.PrimExpr -> HPQ.PrimExpr) -> Column c -> Column a
+    mapColumn primExpr c = Column (primExpr (unColumn c))
+
 binOp :: HPQ.BinOp -> Column a -> Column b -> Column c
 binOp op (Column e) (Column e') = Column (HPQ.BinExpr op e e')
 
