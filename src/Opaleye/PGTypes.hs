@@ -127,7 +127,7 @@ pgLazyJSON = pgJSON . IPT.lazyDecodeUtf8
 
 -- The jsonb data type was introduced in PostgreSQL version 9.4
 pgJSONB :: String -> Column PGJsonb
-pgJSONB = IPT.castToType "jsonb"
+pgJSONB = C.unsafeCast "jsonb" . pgString
 
 pgStrictJSONB :: SByteString.ByteString -> Column PGJsonb
 pgStrictJSONB = pgJSONB . IPT.strictDecodeUtf8
