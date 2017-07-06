@@ -71,6 +71,7 @@ data UnOp = OpNot
           | OpNegate
           | OpLower
           | OpUpper
+          | OpUnnest
           | UnOpOther String
           deriving (Show,Read)
 

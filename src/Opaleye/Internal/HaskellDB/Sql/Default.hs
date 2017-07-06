@@ -204,6 +204,7 @@ sqlUnOp  OpAbs         = ("@", UnOpFun)
 sqlUnOp  OpNegate      = ("-", UnOpFun)
 sqlUnOp  OpLower       = ("LOWER", UnOpFun)
 sqlUnOp  OpUpper       = ("UPPER", UnOpFun)
+sqlUnOp  OpUnnest      = ("UNNEST", UnOpFun)
 sqlUnOp  (UnOpOther s) = (s, UnOpFun)
 
 

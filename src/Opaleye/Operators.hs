@@ -313,6 +313,9 @@ singletonArray x = arrayPrepend x emptyArray
 index :: (C.PGIntegral i) => Column' m (T.PGArray n a) -> Column' l i -> NullableColumn a
 index (Column a) (Column b) = Column (HPQ.ArrayIndex a b)
 
+unnest :: Column' l (T.PGArray m a) -> Column' 'Nullable a
+unnest = C.unOp HPQ.OpUnnest
+
 -- * Other operators
 
 timestamptzAtTimeZone :: Column T.PGTimestamptz
